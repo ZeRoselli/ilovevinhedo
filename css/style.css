@@ -69,7 +69,8 @@ a { text-decoration: none; color: inherit; }
   justify-content: space-between; height: 72px;
 }
 .logo { display: flex; align-items: center; gap: 8px; color: #1a1a2e; }
-.logo__img { height: 38px; width: auto; }
+.logo__img { height: 48px; width: auto; }
+.header--scrolled .logo__img { height: 38px; }
 .nav__list { display: flex; gap: 32px; list-style: none; }
 .nav__link {
   color: #4a3b5a; font-weight: 500; position: relative; padding-bottom: 4px;
@@ -223,12 +224,10 @@ a { text-decoration: none; color: inherit; }
 .carousel__track {
   display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory;
   scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
-  padding-bottom: 8px;
+  padding: 8px 4px 16px;
 }
 .carousel__track { -ms-overflow-style: none; scrollbar-width: none; }
 .carousel__track::-webkit-scrollbar { display: none; }
-.carousel__track::-webkit-scrollbar-track { background: rgba(0,0,0,.05); border-radius: 4px; }
-.carousel__track::-webkit-scrollbar-thumb { background: rgba(233,30,99,.3); border-radius: 4px; }
 
 .carousel__nav { display: flex; gap: 8px; }
 .carousel__btn {
@@ -239,6 +238,22 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 2px 12px rgba(0,0,0,.06);
 }
 .carousel__btn:hover { background: #e91e63; color: #fff; border-color: #e91e63; transform: scale(1.05); }
+
+.carousel__shelf { position: relative; }
+.carousel__shelf:hover .carousel__arrow { opacity: 1; }
+.carousel__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 3; width: 52px; height: 52px; border-radius: 50%;
+  background: #fff; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,.12);
+  color: #1a1a2e; font-size: 1.2rem;
+  transition: all .3s; opacity: 0;
+}
+.carousel__arrow:hover { background: #e91e63; color: #fff; transform: translateY(-50%) scale(1.08); }
+.carousel__arrow--prev { left: 0; }
+.carousel__arrow--next { right: 0; }
+.carousel__arrow:active { transform: translateY(-50%) scale(.95); }
 
 .event-card {
   min-width: 320px; max-width: 320px; scroll-snap-align: start;

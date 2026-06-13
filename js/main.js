@@ -54,11 +54,20 @@ document.addEventListener("DOMContentLoaded", () => {
     eventsTrack.appendChild(el);
   });
 
+  const scrollAmount = 344;
+  document.querySelector('.carousel__arrow--next').addEventListener('click', () => {
+    const maxScroll = eventsTrack.scrollWidth - eventsTrack.clientWidth;
+    const target = Math.min(eventsTrack.scrollLeft + scrollAmount, maxScroll);
+    eventsTrack.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
+  document.querySelector('.carousel__arrow--prev').addEventListener('click', () => {
+    eventsTrack.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  });
   document.querySelector('.carousel__btn--next').addEventListener('click', () => {
-    eventsTrack.scrollBy({ left: 344, behavior: 'smooth' });
+    eventsTrack.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   });
   document.querySelector('.carousel__btn--prev').addEventListener('click', () => {
-    eventsTrack.scrollBy({ left: -344, behavior: 'smooth' });
+    eventsTrack.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
   });
 
   const observer = new IntersectionObserver(entries => {
