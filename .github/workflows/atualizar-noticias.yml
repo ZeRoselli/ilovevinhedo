@@ -1,0 +1,28 @@
+name: Atualizar Notícias Vinhedo
+
+on:
+  schedule:
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Buscar notícias e atualizar js/noticias.js
+        env:
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: node scripts/atualizar-noticias.mjs
+
+      - name: Commitar e push se houver mudanças
+        run: |
+          git config user.name "I Love Vinhedo Bot"
+          git config user.email "bot@ilovevinhedo.com.br"
+          git add js/noticias.js
+          git diff --staged --quiet || (git commit -m "notícias atualizadas automaticamente [skip ci]" && git push)

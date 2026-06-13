@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I ❤️ Vinhedo — Notícias, Eventos e Muito Mais</title>
+  <meta name="description" content="Fique por dentro do que acontece em Vinhedo. Notícias, eventos, gastronomia e o melhor da cidade.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="#" class="logo">
+        <img src="img/logo.png" alt="I Love Vinhedo" class="logo__img">
+      </a>
+      <nav class="nav" id="nav">
+        <ul class="nav__list">
+          <li><a href="#noticias" class="nav__link">Notícias</a></li>
+          <li><a href="#eventos" class="nav__link">Eventos</a></li>
+          <li><a href="#guia" class="nav__link">Guia</a></li>
+          <li><a href="#contato" class="nav__link">Contato</a></li>
+        </ul>
+      </nav>
+      <a href="https://www.instagram.com/ilovevinhedo/" target="_blank" class="btn-social-header">
+        <i class="fab fa-instagram"></i> Siga
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__overlay"></div>
+    <div class="container hero__content">
+      <span class="hero__badge">Sua cidade em primeiro lugar</span>
+      <h1 class="hero__title">O melhor de <br>Vinhedo está aqui</h1>
+      <p class="hero__subtitle">Notícias, eventos, gastronomia e tudo que a cidade tem de melhor — num só lugar.</p>
+      <div class="hero__actions">
+        <a href="#noticias" class="btn btn--primary">Últimas Notícias</a>
+        <a href="https://www.instagram.com/ilovevinhedo/" target="_blank" class="btn btn--outline">
+          <i class="fab fa-instagram"></i> Instagram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="noticias">
+    <div class="container">
+      <h2 class="section__title">Últimas Notícias</h2>
+      <p class="section__subtitle">Fique por dentro do que rola em Vinhedo</p>
+      <div class="news-grid" id="news-grid"></div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="eventos">
+    <div class="container">
+      <h2 class="section__title">Próximos Eventos</h2>
+      <p class="section__subtitle">Agenda cultural e eventos da cidade</p>
+      <div class="events" id="events"></div>
+    </div>
+  </section>
+
+  <section class="section" id="guia">
+    <div class="container">
+      <h2 class="section__title">Guia da Cidade</h2>
+      <p class="section__subtitle">Onde comer, visitar e se divertir em Vinhedo</p>
+      <div class="guia-grid">
+        <a href="#" class="guia-card">
+          <div class="guia-card__icon"><i class="fas fa-utensils"></i></div>
+          <h3>Gastronomia</h3>
+          <p>Restaurantes, bares e cafés</p>
+        </a>
+        <a href="#" class="guia-card">
+          <div class="guia-card__icon"><i class="fas fa-tree"></i></div>
+          <h3>Parques & Lazer</h3>
+          <p>Áreas verdes e diversão</p>
+        </a>
+        <a href="#" class="guia-card">
+          <div class="guia-card__icon"><i class="fas fa-hotel"></i></div>
+          <h3>Onde Ficar</h3>
+          <p>Hotéis e pousadas</p>
+        </a>
+        <a href="#" class="guia-card">
+          <div class="guia-card__icon"><i class="fas fa-shopping-bag"></i></div>
+          <h3>Comércio Local</h3>
+          <p>Lojas e serviços</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--newsletter">
+    <div class="container">
+      <div class="newsletter">
+        <h2 class="newsletter__title">Receba novidades no WhatsApp</h2>
+        <p class="newsletter__text">As notícias de Vinhedo direto no seu celular</p>
+        <a href="https://wa.me/5511999999999" target="_blank" class="btn btn--primary">
+          <i class="fab fa-whatsapp"></i> Entrar no Grupo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" id="contato">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col">
+          <h4><img src="img/logo.png" alt="I Love Vinhedo" class="footer__logo"></h4>
+          <p>Sua fonte de informação sobre Vinhedo — notícias, eventos e o melhor da cidade.</p>
+          <div class="footer__social">
+            <a href="https://www.instagram.com/ilovevinhedo/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/5511999999999" target="_blank"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer__col">
+          <h4>Navegue</h4>
+          <a href="#noticias">Notícias</a>
+          <a href="#eventos">Eventos</a>
+          <a href="#guia">Guia da Cidade</a>
+        </div>
+        <div class="footer__col">
+          <h4>Contato</h4>
+          <a href="mailto:contato@ilovevinhedo.com.br">contato@ilovevinhedo.com.br</a>
+          <a href="https://wa.me/5511999999999">WhatsApp</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2026 I Love Vinhedo. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/noticias.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
