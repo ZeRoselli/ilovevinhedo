@@ -1,4 +1,18 @@
-document.addEventListener("DOMContentLoaded", () => {
+const API_BASE = '/api/data';
+
+async function api(type) {
+  try {
+    const res = await fetch(`${API_BASE}?type=${type}`);
+    if (res.ok) return res.json();
+  } catch {}
+  return [];
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const [noticias, eventos, empresas] = await Promise.all([
+    api('noticias'), api('eventos'), api('empresas')
+  ]);
+
   const header = document.getElementById("header");
   const hamburger = document.getElementById("hamburger");
   const nav = document.getElementById("nav");
@@ -57,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const scrollAmount = 344;
   document.querySelector('.carousel__arrow--next').addEventListener('click', () => {
     const maxScroll = eventsTrack.scrollWidth - eventsTrack.clientWidth;
-    const target = Math.min(eventsTrack.scrollLeft + scrollAmount, maxScroll);
     eventsTrack.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   });
   document.querySelector('.carousel__arrow--prev').addEventListener('click', () => {
@@ -87,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Hotel": "fa-hotel",
     "Outro": "fa-store"
   };
-  if (empresasGrid && empresas) {
+  if (empresasGrid) {
     empresas.forEach(e => {
       const cor = coresEmpresa[e.tipo] || coresEmpresa["Outro"];
       const icone = iconesEmpresa[e.tipo] || "fa-store";

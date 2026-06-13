@@ -1,4 +1,4 @@
-import { writeFileSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync } from 'fs';
 
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 if (!FIRECRAWL_API_KEY) {
@@ -36,7 +36,7 @@ function formatarData(dateStr) {
 
 function categorizar(titulo, desc) {
   const t = (titulo + ' ' + desc).toLowerCase();
-  if (t.includes('polícia') || t.includes('polícia') || t.includes('operação') || t.includes('crime') || t.includes('corrupção')) return 'Polícia';
+  if (t.includes('polícia') || t.includes('operação') || t.includes('crime') || t.includes('corrupção')) return 'Polícia';
   if (t.includes('evento') || t.includes('festa') || t.includes('show') || t.includes('cultura') || t.includes('música')) return 'Eventos';
   if (t.includes('gastronomia') || t.includes('restaurante') || t.includes('comida') || t.includes('bar')) return 'Gastronomia';
   if (t.includes('econ') || t.includes('empresa') || t.includes('fábrica') || t.includes('comércio') || t.includes('inaugura')) return 'Economia';
@@ -45,57 +45,35 @@ function categorizar(titulo, desc) {
   return 'Cidade';
 }
 
-async function gerarNoticiasJs() {
+async function gerarNoticiasJson() {
   const resultados = await buscarNoticias();
 
-  const noticias = resultados.map((n) => ({
+  const novasNoticias = resultados.map((n) => ({
     titulo: n.title.replace(/^(VÍDEO|VIDEO|FOTO|ÁUDIO|AUDIO):\s*/i, '').trim(),
     descricao: (n.snippet || '').replace(/\s+/g, ' ').trim().substring(0, 150),
     data: formatarData(n.date),
     categoria: categorizar(n.title, n.snippet || '')
   }));
 
-  const jsContent = `// GERADO AUTOMATICAMENTE em ${new Date().toISOString()}
-// Fonte: Firecrawl Search
-
-const noticias = ${JSON.stringify(noticias, null, 2)};
-
-const eventos = [
-  {
-    titulo: "Festa da Uva e do Vinho",
-    descricao: "Tradicional celebração com gastronomia, shows e pisa de uva.",
-    dia: "14",
-    mes: "MAR",
-    tag: "Gastronomia"
-  },
-  {
-    titulo: "Manifestação contra aumento do IPTU",
-    descricao: "Moradores de Vinhedo convocam protesto pacífico.",
-    dia: "11",
-    mes: "JAN",
-    tag: "Cidade"
-  },
-  {
-    titulo: "Projeto Fome da Palavra",
-    descricao: "EVG leva Bíblias e conscientização a colégio em Vinhedo.",
-    dia: "15",
-    mes: "MAI",
-    tag: "Social"
+  let existentes = [];
+  if (existsSync('data/noticias.json')) {
+    try {
+      existentes = JSON.parse(readFileSync('data/noticias.json', 'utf-8'));
+    } catch {}
   }
-];
 
-const empresas = ${JSON.stringify([
-    { nome: "Cardeais Gastronomia", tipo: "Restaurante", descricao: "Culinária italiana autoral em ambiente acolhedor.", endereco: "Centro, Vinhedo", telefone: "(19) 9xxxx-xxxx", instagram: "@cardeaisgastronomia" },
-    { nome: "Osteria Limoncello", tipo: "Restaurante", descricao: "Comida italiana premiada com vista encantadora.", endereco: "Vinhedo", telefone: "(19) 9xxxx-xxxx", instagram: "@osterialimoncello" },
-    { nome: "Empório do Vinho", tipo: "Loja", descricao: "Vinhos selecionados, queijos e produtos importados.", endereco: "Centro, Vinhedo", telefone: "(19) 9xxxx-xxxx" }
-  ], null, 2)};
-`;
+  const titulosExistentes = new Set(existentes.map(n => n.titulo));
+  for (const n of novasNoticias) {
+    if (!titulosExistentes.has(n.titulo)) {
+      existentes.unshift(n);
+    }
+  }
 
-  writeFileSync('js/noticias.js', jsContent, 'utf-8');
-  console.log(`noticias.js atualizado com ${noticias.length} notícias`);
+  writeFileSync('data/noticias.json', JSON.stringify(existentes, null, 2), 'utf-8');
+  console.log(`data/noticias.json atualizado com ${existentes.length} notícias (${novasNoticias.length} novas encontradas)`);
 }
 
-gerarNoticiasJs().catch(err => {
+gerarNoticiasJson().catch(err => {
   console.error('Erro:', err.message);
   process.exit(1);
 });

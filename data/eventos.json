@@ -1,0 +1,23 @@
+[
+  {
+    "titulo": "Festa da Uva e do Vinho",
+    "descricao": "Tradicional celebração com gastronomia, shows e pisa de uva.",
+    "dia": "14",
+    "mes": "MAR",
+    "tag": "Gastronomia"
+  },
+  {
+    "titulo": "Manifestação contra aumento do IPTU",
+    "descricao": "Moradores de Vinhedo convocam protesto pacífico.",
+    "dia": "11",
+    "mes": "JAN",
+    "tag": "Cidade"
+  },
+  {
+    "titulo": "Projeto Fome da Palavra",
+    "descricao": "EVG leva Bíblias e conscientização a colégio em Vinhedo.",
+    "dia": "15",
+    "mes": "MAI",
+    "tag": "Social"
+  }
+]
