@@ -25,22 +25,40 @@ document.addEventListener("DOMContentLoaded", () => {
     newsGrid.appendChild(el);
   });
 
-  const eventsContainer = document.getElementById("events");
-  eventos.forEach(e => {
+  const eventsTrack = document.getElementById("eventsTrack");
+  const coresEventos = [
+    "linear-gradient(135deg, #667eea, #764ba2)",
+    "linear-gradient(135deg, #f093fb, #f5576c)",
+    "linear-gradient(135deg, #4facfe, #00f2fe)",
+    "linear-gradient(135deg, #43e97b, #38f9d7)",
+    "linear-gradient(135deg, #fa709a, #fee140)"
+  ];
+  eventos.forEach((e, i) => {
     const el = document.createElement("div");
-    el.className = "event";
+    el.className = "event-card";
     el.innerHTML = `
-      <div class="event__date">
-        <span class="event__date-day">${e.dia}</span>
-        <span class="event__date-month">${e.mes}</span>
+      <div class="event-card__image">
+        <div class="event-card__image-bg" style="background:${coresEventos[i % coresEventos.length]}"></div>
+        <div class="event-card__image-overlay"></div>
+        <div class="event-card__date">
+          <span class="event-card__date-day">${e.dia}</span>
+          <span class="event-card__date-month">${e.mes}</span>
+        </div>
       </div>
-      <div class="event__info">
-        <h3 class="event__title">${e.titulo}</h3>
-        <p class="event__desc">${e.descricao}</p>
+      <div class="event-card__body">
+        <h3 class="event-card__title">${e.titulo}</h3>
+        <p class="event-card__desc">${e.descricao}</p>
+        <span class="event-card__tag">${e.tag}</span>
       </div>
-      <span class="event__tag">${e.tag}</span>
     `;
-    eventsContainer.appendChild(el);
+    eventsTrack.appendChild(el);
+  });
+
+  document.querySelector('.carousel__btn--next').addEventListener('click', () => {
+    eventsTrack.scrollBy({ left: 344, behavior: 'smooth' });
+  });
+  document.querySelector('.carousel__btn--prev').addEventListener('click', () => {
+    eventsTrack.scrollBy({ left: -344, behavior: 'smooth' });
   });
 
   const observer = new IntersectionObserver(entries => {
@@ -52,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll(".news-card, .event, .guia-card, .stat").forEach(el => {
+  document.querySelectorAll(".news-card, .event-card, .guia-card, .stat").forEach(el => {
     el.style.opacity = "0";
     el.style.transform = "translateY(30px)";
     el.style.transition = "opacity .6s ease, transform .6s ease";

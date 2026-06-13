@@ -152,14 +152,25 @@
     </div>
   </section>
 
-  <section class="section" id="eventos">
+  <section class="section section--alt" id="eventos">
     <div class="container">
-      <div class="section__header">
-        <span class="section__tag">Agenda</span>
-        <h2 class="section__title">Próximos <span class="text-gradient">Eventos</span></h2>
-        <p class="section__subtitle">Não perca o que vai acontecer na cidade</p>
+      <div class="section__header section__header--row">
+        <div>
+          <span class="section__tag">Agenda</span>
+          <h2 class="section__title">Próximos <span class="text-gradient">Eventos</span></h2>
+        </div>
+        <div class="carousel__nav">
+          <button class="carousel__btn carousel__btn--prev" aria-label="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="carousel__btn carousel__btn--next" aria-label="Próximo">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
-      <div class="events" id="events"></div>
+      <div class="carousel" id="eventsCarousel">
+        <div class="carousel__track" id="eventsTrack"></div>
+      </div>
     </div>
   </section>
 
