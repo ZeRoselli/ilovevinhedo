@@ -68,7 +68,7 @@ a { text-decoration: none; color: inherit; }
   display: flex; align-items: center;
   justify-content: space-between; height: 96px;
 }
-.logo { display: flex; align-items: center; gap: 8px; color: #1a1a2e; }
+.logo { display: flex; align-items: center; gap: 8px; color: #1a1a2e; height: 96px; }
 .logo__img { width: 240px; height: auto; transition: all .3s; }
 .header--scrolled .logo__img { width: 140px; }
 .nav__list { display: flex; gap: 32px; list-style: none; }
