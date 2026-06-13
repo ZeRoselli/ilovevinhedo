@@ -33,7 +33,6 @@ async function readFile(type) {
     const data = await ghFetch(`/repos/${REPO}/contents/${path}`);
     return { content: decodeContent(data), sha: data.sha };
   } catch {
-    const dir = await ghFetch(`/repos/${REPO}/contents/data`);
     return null;
   }
 }
@@ -52,37 +51,41 @@ async function writeFile(type, content, sha) {
   });
 }
 
-function corsHeaders() {
-  return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  };
+function json(res, code, data) {
+  res.statusCode = code;
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.end(JSON.stringify(data));
 }
 
 module.exports = async function handler(req, res) {
-  const headers = corsHeaders();
-
   if (req.method === 'OPTIONS') {
-    return res.status(200).set(headers).end();
+    res.statusCode = 204;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.end();
+    return;
   }
 
   if (!GITHUB_TOKEN) {
-    return res.status(500).set(headers).json({ error: 'GITHUB_TOKEN não configurado' });
+    json(res, 500, { error: 'GITHUB_TOKEN não configurado' });
+    return;
   }
 
   const { type } = req.query;
   if (!['noticias', 'eventos', 'empresas'].includes(type)) {
-    return res.status(400).set(headers).json({ error: 'Tipo inválido. Use: noticias, eventos, empresas' });
+    json(res, 400, { error: 'Tipo inválido. Use: noticias, eventos, empresas' });
+    return;
   }
 
   try {
     if (req.method === 'GET') {
       const result = await readFile(type);
-      if (!result) {
-        return res.status(200).set(headers).json([]);
-      }
-      return res.status(200).set(headers).json(result.content);
+      json(res, 200, result ? result.content : []);
+      return;
     }
 
     if (req.method === 'POST') {
@@ -91,39 +94,34 @@ module.exports = async function handler(req, res) {
       const sha = result ? result.sha : undefined;
       data.unshift(req.body);
       await writeFile(type, data, sha);
-      return res.status(201).set(headers).json(req.body);
+      json(res, 201, req.body);
+      return;
     }
 
     if (req.method === 'PUT') {
       const i = parseInt(req.query.i);
-      if (isNaN(i)) {
-        return res.status(400).set(headers).json({ error: 'Índice inválido' });
-      }
+      if (isNaN(i)) { json(res, 400, { error: 'Índice inválido' }); return; }
       const result = await readFile(type);
-      if (!result || !result.content[i]) {
-        return res.status(404).set(headers).json({ error: 'Item não encontrado' });
-      }
+      if (!result || !result.content[i]) { json(res, 404, { error: 'Item não encontrado' }); return; }
       result.content[i] = req.body;
       await writeFile(type, result.content, result.sha);
-      return res.status(200).set(headers).json(req.body);
+      json(res, 200, req.body);
+      return;
     }
 
     if (req.method === 'DELETE') {
       const i = parseInt(req.query.i);
-      if (isNaN(i)) {
-        return res.status(400).set(headers).json({ error: 'Índice inválido' });
-      }
+      if (isNaN(i)) { json(res, 400, { error: 'Índice inválido' }); return; }
       const result = await readFile(type);
-      if (!result || !result.content[i]) {
-        return res.status(404).set(headers).json({ error: 'Item não encontrado' });
-      }
+      if (!result || !result.content[i]) { json(res, 404, { error: 'Item não encontrado' }); return; }
       result.content.splice(i, 1);
       await writeFile(type, result.content, result.sha);
-      return res.status(200).set(headers).json({ ok: true });
+      json(res, 200, { ok: true });
+      return;
     }
 
-    return res.status(405).set(headers).json({ error: 'Método não permitido' });
+    json(res, 405, { error: 'Método não permitido' });
   } catch (err) {
-    return res.status(500).set(headers).json({ error: err.message });
+    json(res, 500, { error: err.message });
   }
-}
+};
