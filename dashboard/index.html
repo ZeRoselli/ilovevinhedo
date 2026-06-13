@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — I ❤️ Vinhedo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f5f0ed; color: #1a1a2e; }
+    .dashboard { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 240px; background: #1a1a2e; color: #fff; padding: 32px 0; flex-shrink: 0;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    .sidebar__logo { padding: 0 24px 32px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 24px; }
+    .sidebar__logo img { height: 36px; filter: brightness(10); }
+    .sidebar__nav { list-style: none; }
+    .sidebar__item { padding: 12px 24px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: .9rem; transition: all .2s; border-left: 3px solid transparent; color: rgba(255,255,255,.6); }
+    .sidebar__item:hover { background: rgba(255,255,255,.05); color: #fff; }
+    .sidebar__item--active { background: rgba(233,30,99,.15); color: #ff6b6b; border-left-color: #e91e63; }
+    .sidebar__item i { width: 20px; text-align: center; }
+    .sidebar__bottom { margin-top: auto; padding: 24px; border-top: 1px solid rgba(255,255,255,.08); }
+    .sidebar__bottom a { color: rgba(255,255,255,.4); font-size: .8rem; display: flex; align-items: center; gap: 8px; text-decoration: none; transition: color .2s; }
+    .sidebar__bottom a:hover { color: #fff; }
+
+    .main { flex: 1; padding: 40px; max-width: calc(100vw - 240px); }
+    .main__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .main__title { font-size: 1.5rem; font-weight: 700; }
+    .main__title span { color: #6b5b7b; font-weight: 400; font-size: .9rem; display: block; margin-top: 4px; }
+
+    .tab-content { display: none; }
+    .tab-content--active { display: block; }
+
+    .card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 20px rgba(0,0,0,.04); margin-bottom: 24px; }
+    .card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .card__title { font-size: 1.05rem; font-weight: 600; }
+    .card__action { display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; background: #e91e63; color: #fff; border: none; border-radius: 50px; font-weight: 600; font-size: .8rem; cursor: pointer; transition: all .3s; text-decoration: none; }
+    .card__action:hover { background: #c2185b; transform: translateY(-1px); }
+    .card__action--outline { background: transparent; color: #e91e63; border: 2px solid rgba(233,30,99,.2); }
+    .card__action--outline:hover { background: rgba(233,30,99,.05); border-color: #e91e63; }
+    .card__action--sm { padding: 6px 14px; font-size: .75rem; }
+    .card__action--danger { background: #dc3545; }
+    .card__action--danger:hover { background: #b02a37; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 6px; color: #4a3b5a; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid rgba(0,0,0,.08); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: .9rem; transition: border .2s; background: #fcf9f7; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #e91e63; background: #fff; }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .table { width: 100%; border-collapse: collapse; }
+    .table th { text-align: left; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #6b5b7b; padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,.06); }
+    .table td { padding: 12px 16px; font-size: .88rem; border-bottom: 1px solid rgba(0,0,0,.04); vertical-align: middle; }
+    .table tr:hover td { background: rgba(0,0,0,.02); }
+    .table .actions { display: flex; gap: 6px; }
+    .table .actions button { padding: 6px 10px; border: none; border-radius: 8px; cursor: pointer; font-size: .8rem; transition: all .2s; }
+    .table .actions .edit-btn { background: rgba(233,30,99,.08); color: #e91e63; }
+    .table .actions .edit-btn:hover { background: rgba(233,30,99,.15); }
+    .table .actions .del-btn { background: rgba(220,53,53,.08); color: #dc3545; }
+    .table .actions .del-btn:hover { background: rgba(220,53,53,.15); }
+
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 50px; font-size: .7rem; font-weight: 600; }
+    .tag--noticia { background: rgba(233,30,99,.08); color: #e91e63; }
+    .tag--evento { background: rgba(76,175,80,.08); color: #4caf50; }
+    .tag--empresa { background: rgba(33,150,243,.08); color: #2196f3; }
+
+    .empty-state { text-align: center; padding: 48px 24px; color: #6b5b7b; }
+    .empty-state i { font-size: 3rem; margin-bottom: 16px; opacity: .3; }
+    .empty-state p { font-size: .9rem; }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e; color: #fff; padding: 14px 24px; border-radius: 12px; font-size: .85rem; box-shadow: 0 8px 40px rgba(0,0,0,.15); transform: translateY(100px); opacity: 0; transition: all .4s; z-index: 999; }
+    .toast--show { transform: translateY(0); opacity: 1; }
+    .toast--success { background: #4caf50; }
+    .toast--error { background: #dc3545; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-box { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,.04); text-align: center; }
+    .stat-box__number { font-size: 2rem; font-weight: 800; color: #1a1a2e; }
+    .stat-box__label { font-size: .8rem; color: #6b5b7b; margin-top: 4px; }
+    .stat-box--pink .stat-box__number { color: #e91e63; }
+    .stat-box--green .stat-box__number { color: #4caf50; }
+    .stat-box--blue .stat-box__number { color: #2196f3; }
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 998; align-items: center; justify-content: center; }
+    .modal-overlay--open { display: flex; }
+    .modal { background: #fff; border-radius: 20px; padding: 32px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+    .modal__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .modal__title { font-size: 1.2rem; font-weight: 700; }
+    .modal__close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b5b7b; padding: 4px; }
+    .modal__actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+    .modal__actions button { padding: 10px 24px; border-radius: 50px; font-weight: 600; font-size: .85rem; cursor: pointer; border: none; transition: all .2s; }
+
+    .publish-bar { background: #fff; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 20px rgba(0,0,0,.04); display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+    .publish-bar p { font-size: .85rem; color: #6b5b7b; }
+    .publish-bar p strong { color: #1a1a2e; }
+  </style>
+</head>
+<body>
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar__logo">
+      <img src="../img/logo.png" alt="I Love Vinhedo">
+    </div>
+    <ul class="sidebar__nav">
+      <li class="sidebar__item sidebar__item--active" data-tab="resumo"><i class="fas fa-chart-pie"></i> Resumo</li>
+      <li class="sidebar__item" data-tab="noticias"><i class="fas fa-newspaper"></i> Notícias</li>
+      <li class="sidebar__item" data-tab="eventos"><i class="fas fa-calendar-alt"></i> Eventos</li>
+      <li class="sidebar__item" data-tab="empresas"><i class="fas fa-store"></i> Empresas</li>
+    </ul>
+    <div class="sidebar__bottom">
+      <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> Ver site</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="main__header">
+      <div>
+        <h1 class="main__title">Dashboard <span>Painel de controle do I ❤️ Vinhedo</span></h1>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="card__action card__action--outline" onclick="baixarDados()"><i class="fas fa-download"></i> Exportar</button>
+      </div>
+    </div>
+
+    <div id="tab-resumo" class="tab-content tab-content--active">
+      <div class="stats-grid">
+        <div class="stat-box stat-box--pink">
+          <div class="stat-box__number" id="statNoticias">0</div>
+          <div class="stat-box__label">Notícias</div>
+        </div>
+        <div class="stat-box stat-box--green">
+          <div class="stat-box__number" id="statEventos">0</div>
+          <div class="stat-box__label">Eventos</div>
+        </div>
+        <div class="stat-box stat-box--blue">
+          <div class="stat-box__number" id="statEmpresas">0</div>
+          <div class="stat-box__label">Empresas</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__header"><span class="card__title">Últimas Notícias</span></div>
+        <div id="resumo-noticias"><div class="empty-state"><p>Nenhuma notícia cadastrada</p></div></div>
+      </div>
+    </div>
+
+    <div id="tab-noticias" class="tab-content">
+      <div class="card">
+        <div class="card__header">
+          <span class="card__title">Notícias</span>
+          <button class="card__action" onclick="abrirModal('noticia')"><i class="fas fa-plus"></i> Nova Notícia</button>
+        </div>
+        <table class="table">
+          <thead><tr><th>Título</th><th>Data</th><th>Categoria</th><th>Ações</th></tr></thead>
+          <tbody id="tabelaNoticias"></tbody>
+        </table>
+        <div id="emptyNoticias" class="empty-state"><i class="fas fa-newspaper"></i><p>Nenhuma notícia cadastrada. Clique em "Nova Notícia" para começar.</p></div>
+      </div>
+    </div>
+
+    <div id="tab-eventos" class="tab-content">
+      <div class="card">
+        <div class="card__header">
+          <span class="card__title">Eventos</span>
+          <button class="card__action" onclick="abrirModal('evento')"><i class="fas fa-plus"></i> Novo Evento</button>
+        </div>
+        <table class="table">
+          <thead><tr><th>Evento</th><th>Data</th><th>Tipo</th><th>Ações</th></tr></thead>
+          <tbody id="tabelaEventos"></tbody>
+        </table>
+        <div id="emptyEventos" class="empty-state"><i class="fas fa-calendar-alt"></i><p>Nenhum evento cadastrado.</p></div>
+      </div>
+    </div>
+
+    <div id="tab-empresas" class="tab-content">
+      <div class="card">
+        <div class="card__header">
+          <span class="card__title">Empresas e Comércios</span>
+          <button class="card__action" onclick="abrirModal('empresa')"><i class="fas fa-plus"></i> Nova Empresa</button>
+        </div>
+        <table class="table">
+          <thead><tr><th>Nome</th><th>Tipo</th><th>Endereço</th><th>Ações</th></tr></thead>
+          <tbody id="tabelaEmpresas"></tbody>
+        </table>
+        <div id="emptyEmpresas" class="empty-state"><i class="fas fa-store"></i><p>Nenhuma empresa cadastrada.</p></div>
+      </div>
+    </div>
+
+    <div class="publish-bar">
+      <p>Você tem <strong id="totalItens">0</strong> itens no total. Os dados são salvos automaticamente no navegador.</p>
+      <button class="card__action" onclick="gerarArquivos()"><i class="fas fa-file-code"></i> Gerar JS</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 class="modal__title" id="modalTitle">Novo</h2>
+      <button class="modal__close" onclick="fecharModal()">✕</button>
+    </div>
+    <form id="modalForm" onsubmit="salvarItem(event)">
+      <div id="modalFields"></div>
+      <div class="modal__actions">
+        <button type="button" onclick="fecharModal()" style="background:rgba(0,0,0,.05);color:#4a3b5a">Cancelar</button>
+        <button type="submit" style="background:#e91e63;color:#fff">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const TIPOS_EMPRESA = ["Restaurante", "Bar", "Loja", "Serviço", "Hotel", "Outro"];
+const CATEGORIAS = ["Cidade", "Polícia", "Eventos", "Gastronomia", "Economia", "Esportes", "Saúde"];
+
+let state = { noticias: [], eventos: [], empresas: [] };
+let editando = null;
+let modalTipo = '';
+
+function carregar() {
+  try {
+    const saved = localStorage.getItem('ilovevinhedo_dados');
+    if (saved) state = JSON.parse(saved);
+  } catch {}
+}
+
+function salvar() {
+  localStorage.setItem('ilovevinhedo_dados', JSON.stringify(state));
+  renderizar();
+}
+
+function renderizar() {
+  document.getElementById('statNoticias').textContent = state.noticias.length;
+  document.getElementById('statEventos').textContent = state.eventos.length;
+  document.getElementById('statEmpresas').textContent = state.empresas.length;
+  document.getElementById('totalItens').textContent = state.noticias.length + state.eventos.length + state.empresas.length;
+
+  renderTabela('tabelaNoticias', 'emptyNoticias', state.noticias, (item, i) => `
+    <tr>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.titulo}</td>
+      <td>${item.data}</td>
+      <td><span class="tag tag--noticia">${item.categoria}</span></td>
+      <td class="actions">
+        <button class="edit-btn" onclick="editarItem('noticia',${i})"><i class="fas fa-edit"></i></button>
+        <button class="del-btn" onclick="deletarItem('noticia',${i})"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>
+  `);
+
+  renderTabela('tabelaEventos', 'emptyEventos', state.eventos, (item, i) => `
+    <tr>
+      <td>${item.titulo}</td>
+      <td>${item.dia}/${item.mes}</td>
+      <td><span class="tag tag--evento">${item.tag}</span></td>
+      <td class="actions">
+        <button class="edit-btn" onclick="editarItem('evento',${i})"><i class="fas fa-edit"></i></button>
+        <button class="del-btn" onclick="deletarItem('evento',${i})"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>
+  `);
+
+  renderTabela('tabelaEmpresas', 'emptyEmpresas', state.empresas, (item, i) => `
+    <tr>
+      <td><strong>${item.nome}</strong></td>
+      <td><span class="tag tag--empresa">${item.tipo}</span></td>
+      <td>${item.endereco || '-'}</td>
+      <td class="actions">
+        <button class="edit-btn" onclick="editarItem('empresa',${i})"><i class="fas fa-edit"></i></button>
+        <button class="del-btn" onclick="deletarItem('empresa',${i})"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>
+  `);
+
+  const resumo = document.getElementById('resumo-noticias');
+  if (state.noticias.length === 0) {
+    resumo.innerHTML = '<div class="empty-state"><p>Nenhuma notícia cadastrada</p></div>';
+  } else {
+    resumo.innerHTML = state.noticias.slice(0, 3).map(n => `
+      <div style="padding:12px 0;border-bottom:1px solid rgba(0,0,0,.04);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.9rem">${n.titulo}</span>
+        <span class="tag tag--noticia">${n.categoria}</span>
+      </div>
+    `).join('');
+  }
+}
+
+function renderTabela(id, emptyId, dados, fn) {
+  const tbody = document.getElementById(id);
+  const empty = document.getElementById(emptyId);
+  if (dados.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    tbody.innerHTML = dados.map((item, i) => fn(item, i)).join('');
+    empty.style.display = 'none';
+  }
+}
+
+function abrirModal(tipo, index) {
+  modalTipo = tipo;
+  editando = index !== undefined ? index : null;
+  const nomes = { noticia: 'Notícia', evento: 'Evento', empresa: 'Empresa' };
+  document.getElementById('modalTitle').textContent = editando !== null ? `Editar ${nomes[tipo]}` : `Nova ${nomes[tipo]}`;
+  document.getElementById('modalOverlay').classList.add('modal-overlay--open');
+
+  let fields = '';
+  if (tipo === 'noticia') {
+    const item = editando !== null ? state.noticias[editando] : {};
+    fields = `
+      <div class="form-group"><label>Título</label><input name="titulo" value="${item.titulo || ''}" required></div>
+      <div class="form-group"><label>Descrição</label><textarea name="descricao" required>${item.descricao || ''}</textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Data</label><input name="data" type="date" value="${item.dataRaw || ''}"></div>
+        <div class="form-group"><label>Categoria</label><select name="categoria">${CATEGORIAS.map(c => `<option ${c === (item.categoria || 'Cidade') ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+      </div>
+    `;
+  } else if (tipo === 'evento') {
+    const item = editando !== null ? state.eventos[editando] : {};
+    fields = `
+      <div class="form-group"><label>Título</label><input name="titulo" value="${item.titulo || ''}" required></div>
+      <div class="form-group"><label>Descrição</label><textarea name="descricao" required>${item.descricao || ''}</textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Dia</label><input name="dia" value="${item.dia || ''}" required placeholder="ex: 14"></div>
+        <div class="form-group"><label>Mês</label><input name="mes" value="${item.mes || ''}" required placeholder="ex: MAR"></div>
+      </div>
+      <div class="form-group"><label>Tipo</label><select name="tag">${['Gastronomia','Música','Cidade','Social','Esporte','Cultura'].map(c => `<option ${c === (item.tag || '') ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+    `;
+  } else if (tipo === 'empresa') {
+    const item = editando !== null ? state.empresas[editando] : {};
+    fields = `
+      <div class="form-group"><label>Nome da Empresa</label><input name="nome" value="${item.nome || ''}" required></div>
+      <div class="form-row">
+        <div class="form-group"><label>Tipo</label><select name="tipo">${TIPOS_EMPRESA.map(t => `<option ${t === (item.tipo || '') ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Telefone</label><input name="telefone" value="${item.telefone || ''}" placeholder="(19) 9xxxx-xxxx"></div>
+      </div>
+      <div class="form-group"><label>Endereço</label><input name="endereco" value="${item.endereco || ''}" placeholder="Rua, número, bairro"></div>
+      <div class="form-group"><label>Descrição</label><textarea name="descricao">${item.descricao || ''}</textarea></div>
+      <div class="form-group"><label>Instagram</label><input name="instagram" value="${item.instagram || ''}" placeholder="@perfil"></div>
+    `;
+  }
+  document.getElementById('modalFields').innerHTML = fields;
+}
+
+function fecharModal() {
+  document.getElementById('modalOverlay').classList.remove('modal-overlay--open');
+  editando = null;
+}
+
+function salvarItem(e) {
+  e.preventDefault();
+  const form = document.getElementById('modalForm');
+  const data = Object.fromEntries(new FormData(form));
+
+  if (modalTipo === 'noticia') {
+    const item = { titulo: data.titulo, descricao: data.descricao, dataRaw: data.data, categoria: data.categoria };
+    item.data = data.data ? new Date(data.data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\./g, '').toUpperCase() : new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/\./g, '').toUpperCase();
+    if (editando !== null) state.noticias[editando] = item;
+    else state.noticias.unshift(item);
+  } else if (modalTipo === 'evento') {
+    const item = { titulo: data.titulo, descricao: data.descricao, dia: data.dia, mes: data.mes.toUpperCase(), tag: data.tag };
+    if (editando !== null) state.eventos[editando] = item;
+    else state.eventos.push(item);
+  } else if (modalTipo === 'empresa') {
+    const item = { nome: data.nome, tipo: data.tipo, telefone: data.telefone, endereco: data.endereco, descricao: data.descricao, instagram: data.instagram };
+    if (editando !== null) state.empresas[editando] = item;
+    else state.empresas.push(item);
+  }
+
+  salvar();
+  fecharModal();
+  mostrarToast(`${modalTipo === 'noticia' ? 'Notícia' : modalTipo === 'evento' ? 'Evento' : 'Empresa'} salva com sucesso!`, 'success');
+}
+
+function editarItem(tipo, index) {
+  abrirModal(tipo, index);
+}
+
+function deletarItem(tipo, index) {
+  if (!confirm('Tem certeza?')) return;
+  if (tipo === 'noticia') state.noticias.splice(index, 1);
+  else if (tipo === 'evento') state.eventos.splice(index, 1);
+  else if (tipo === 'empresa') state.empresas.splice(index, 1);
+  salvar();
+  mostrarToast('Item removido', 'success');
+}
+
+function mostrarToast(msg, tipo) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast toast--${tipo || 'success'} toast--show`;
+  setTimeout(() => t.classList.remove('toast--show'), 3000);
+}
+
+function baixarDados() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ilovevinhedo-dados.json';
+  a.click();
+}
+
+function gerarArquivos() {
+  let noticiasJs = `// GERADO PELO DASHBOARD em ${new Date().toISOString()}\nconst noticias = ${JSON.stringify(state.noticias.map(n => ({ titulo: n.titulo, descricao: n.descricao, data: n.data, categoria: n.categoria })), null, 2)};\n\n`;
+  noticiasJs += `const eventos = ${JSON.stringify(state.eventos, null, 2)};\n\n`;
+  noticiasJs += `const empresas = ${JSON.stringify(state.empresas, null, 2)};\n`;
+
+  const blob = new Blob([noticiasJs], { type: 'text/javascript' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'dados-completos.js';
+  a.click();
+
+  mostrarToast('Arquivo JS gerado! Copie o conteúdo para js/noticias.js', 'success');
+
+  console.log('=== DADOS PARA COPIAR PARA js/noticias.js ===');
+  console.log(noticiasJs);
+}
+
+document.querySelectorAll('.sidebar__item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar__item').forEach(i => i.classList.remove('sidebar__item--active'));
+    item.classList.add('sidebar__item--active');
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('tab-content--active'));
+    document.getElementById('tab-' + item.dataset.tab).classList.add('tab-content--active');
+  });
+});
+
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modalOverlay')) fecharModal();
+});
+
+carregar();
+renderizar();
+</script>
+</body>
+</html>

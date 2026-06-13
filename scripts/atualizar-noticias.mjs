@@ -83,6 +83,12 @@ const eventos = [
     tag: "Social"
   }
 ];
+
+const empresas = ${JSON.stringify([
+    { nome: "Cardeais Gastronomia", tipo: "Restaurante", descricao: "Culinária italiana autoral em ambiente acolhedor.", endereco: "Centro, Vinhedo", telefone: "(19) 9xxxx-xxxx", instagram: "@cardeaisgastronomia" },
+    { nome: "Osteria Limoncello", tipo: "Restaurante", descricao: "Comida italiana premiada com vista encantadora.", endereco: "Vinhedo", telefone: "(19) 9xxxx-xxxx", instagram: "@osterialimoncello" },
+    { nome: "Empório do Vinho", tipo: "Loja", descricao: "Vinhos selecionados, queijos e produtos importados.", endereco: "Centro, Vinhedo", telefone: "(19) 9xxxx-xxxx" }
+  ], null, 2)};
 `;
 
   writeFileSync('js/noticias.js', jsContent, 'utf-8');

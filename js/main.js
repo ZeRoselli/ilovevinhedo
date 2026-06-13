@@ -70,6 +70,44 @@ document.addEventListener("DOMContentLoaded", () => {
     eventsTrack.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
   });
 
+  const empresasGrid = document.getElementById("empresasGrid");
+  const coresEmpresa = {
+    "Restaurante": "linear-gradient(135deg, #ff6b6b20, #e91e6320)",
+    "Bar": "linear-gradient(135deg, #667eea20, #764ba220)",
+    "Loja": "linear-gradient(135deg, #43e97b20, #38f9d720)",
+    "Serviço": "linear-gradient(135deg, #fa709a20, #fee14020)",
+    "Hotel": "linear-gradient(135deg, #4facfe20, #00f2fe20)",
+    "Outro": "linear-gradient(135deg, #f093fb20, #f5576c20)"
+  };
+  const iconesEmpresa = {
+    "Restaurante": "fa-utensils",
+    "Bar": "fa-glass-cheers",
+    "Loja": "fa-shopping-bag",
+    "Serviço": "fa-concierge-bell",
+    "Hotel": "fa-hotel",
+    "Outro": "fa-store"
+  };
+  if (empresasGrid && empresas) {
+    empresas.forEach(e => {
+      const cor = coresEmpresa[e.tipo] || coresEmpresa["Outro"];
+      const icone = iconesEmpresa[e.tipo] || "fa-store";
+      const el = document.createElement("div");
+      el.className = "empresa-card";
+      el.innerHTML = `
+        <div class="empresa-card__icon" style="background:${cor};color:#e91e63"><i class="fas ${icone}"></i></div>
+        <div class="empresa-card__nome">${e.nome}</div>
+        <div class="empresa-card__tipo">${e.tipo}</div>
+        <div class="empresa-card__desc">${e.descricao || ''}</div>
+        <div class="empresa-card__info">
+          ${e.endereco ? `<span><i class="fas fa-map-marker-alt"></i> ${e.endereco}</span>` : ''}
+          ${e.telefone ? `<span><i class="fas fa-phone"></i> ${e.telefone}</span>` : ''}
+          ${e.instagram ? `<span><i class="fab fa-instagram"></i> ${e.instagram}</span>` : ''}
+        </div>
+      `;
+      empresasGrid.appendChild(el);
+    });
+  }
+
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -79,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll(".news-card, .event-card, .guia-card, .stat").forEach(el => {
+  document.querySelectorAll(".news-card, .event-card, .empresa-card, .guia-card, .stat").forEach(el => {
     el.style.opacity = "0";
     el.style.transform = "translateY(30px)";
     el.style.transition = "opacity .6s ease, transform .6s ease";
