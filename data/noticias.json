@@ -1,5 +1,11 @@
 [
   {
+    "titulo": "Teste API",
+    "descricao": "Noticia de teste",
+    "data": "13 DE JUN DE 2026",
+    "categoria": "Cidade"
+  },
+  {
     "titulo": "Polícia e MP fazem buscas em Campinas e Vinhedo em operação contra corrupção na Secretaria da Fazenda",
     "descricao": "Policiais militares do 1º Batalhão de Ações Especiais de Polícia (1º Baep), em apoio ao Ministério Público de São Paulo (MP-SP),...",
     "data": "26 DE MAR DE 2026",
