@@ -59,12 +59,24 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(el);
   });
 
-  const heroBg = document.querySelector('.hero__bg');
+  let slideIndex = 0;
+  const slides = document.querySelectorAll('.hero__slide');
+  if (slides.length > 1) {
+    setInterval(() => {
+      slides[slideIndex].classList.remove('hero__slide--active');
+      slideIndex = (slideIndex + 1) % slides.length;
+      slides[slideIndex].classList.add('hero__slide--active');
+    }, 6000);
+  }
+
+  const hero = document.getElementById('hero');
   window.addEventListener('scroll', () => {
     const scrolled = window.scrollY;
-    if (heroBg && scrolled < window.innerHeight) {
-      heroBg.style.transform = `scale(${1.1 - scrolled * 0.0003})`;
-      heroBg.style.filter = `brightness(${1 - scrolled * 0.0008})`;
+    if (hero && scrolled < window.innerHeight) {
+      const activeSlide = document.querySelector('.hero__slide--active');
+      if (activeSlide) {
+        activeSlide.style.transform = `scale(${1.1 - scrolled * 0.0003})`;
+      }
     }
   });
 
