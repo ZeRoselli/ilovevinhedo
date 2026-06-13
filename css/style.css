@@ -66,11 +66,11 @@ a { text-decoration: none; color: inherit; }
 .header--scrolled { box-shadow: 0 2px 30px rgba(0,0,0,.08); }
 .header__inner {
   display: flex; align-items: center;
-  justify-content: space-between; height: 88px;
+  justify-content: space-between; height: 116px;
 }
 .logo { display: flex; align-items: center; gap: 8px; color: #1a1a2e; }
-.logo__img { height: 72px; width: auto; transition: height .3s; }
-.header--scrolled .logo__img { height: 48px; }
+.logo__img { height: 96px; width: auto; transition: height .3s; }
+.header--scrolled .logo__img { height: 52px; }
 .nav__list { display: flex; gap: 32px; list-style: none; }
 .nav__link {
   color: #4a3b5a; font-weight: 500; position: relative; padding-bottom: 4px;
@@ -123,6 +123,9 @@ a { text-decoration: none; color: inherit; }
   background-size: 30px 30px;
 }
 .hero__content { position: relative; z-index: 1; color: #fff; max-width: 700px; }
+.hero__logo {
+  height: 120px; width: auto; margin-bottom: 20px; filter: brightness(10);
+}
 .hero__badge {
   display: inline-block; font-size: .8rem; font-weight: 600;
   text-transform: uppercase; letter-spacing: 3px;
@@ -379,7 +382,7 @@ a { text-decoration: none; color: inherit; }
 }
 @media (max-width: 768px) {
   .nav {
-    position: fixed; top: 88px; left: 16px; right: 16px;
+    position: fixed; top: 116px; left: 16px; right: 16px;
     background: #fff; border-radius: 16px; padding: 24px;
     box-shadow: 0 20px 60px rgba(0,0,0,.15);
     transform: translateY(-150%); opacity: 0;
@@ -389,6 +392,7 @@ a { text-decoration: none; color: inherit; }
   .nav__list { flex-direction: column; gap: 16px; }
   .nav__link { font-size: 1rem; }
   .hamburger { display: flex; }
+  .hero__logo { height: 80px; }
   .hero__title-line { font-size: 3rem; }
   .hero { min-height: 90vh; }
   .hero__scroll { display: none; }
@@ -412,6 +416,7 @@ a { text-decoration: none; color: inherit; }
   .carousel__track::-webkit-scrollbar { display: block; height: 4px; }
 }
 @media (max-width: 480px) {
+  .hero__logo { height: 60px; }
   .hero__title-line { font-size: 2.2rem; }
   .hero__actions { flex-direction: column; }
   .hero__actions .btn { width: 100%; justify-content: center; }
