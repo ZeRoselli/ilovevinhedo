@@ -66,11 +66,11 @@ a { text-decoration: none; color: inherit; }
 .header--scrolled { box-shadow: 0 2px 30px rgba(0,0,0,.08); }
 .header__inner {
   display: flex; align-items: center;
-  justify-content: space-between; height: 96px; padding: 8px 0;
+  justify-content: space-between; height: 96px;
 }
 .logo { display: flex; align-items: center; gap: 8px; color: #1a1a2e; }
-.logo__img { width: 240px; height: auto; transition: all .3s; margin-top: 12px; }
-.header--scrolled .logo__img { width: 140px; margin-top: 0; }
+.logo__img { width: 240px; height: auto; transition: all .3s; }
+.header--scrolled .logo__img { width: 140px; }
 .nav__list { display: flex; gap: 32px; list-style: none; }
 .nav__link {
   color: #4a3b5a; font-weight: 500; position: relative; padding-bottom: 4px;
